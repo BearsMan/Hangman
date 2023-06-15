@@ -27,13 +27,33 @@ word_Line.pack()
 # setup input
 userInput = tk.Entry(window)
 userInput.pack()
-guessremains = tk.Label(window, text=f"guesses remaining {max_guesses}")
-guessremains.pack()
 # print statements for start of the game.
 print("guess up to 5 words incorrectly and, you lose")
 print(wordlabel.pack)
 print("the word has", len (word), "and a letters")
+# color for the window
+guessremains = tk.Label(window, text=f"Guesses remaining: {max_guesses}", font=("Times New Roman", 12, "bold"), fg="blue")
+guessremains.pack()
+
+letter_guess = tk.Label(window, text=f"Guessed Letters: {','.join(guesses)}")
+letter_guess.pack()
 # game loops (logic)
+# functions (to handle game logic)
+def handle_Input():
+  global max_guesses, display, guesses, word_length
+  guess = userInput.get().lower()
+  userInput.delete(0, tk.END)
+  if not guess.isalpha() or len(guess) != 1:
+    return
+    if guess in word:
+      for i in range(word_length):
+        if word[i] == guess:
+          display = display[:i] + guess + display[i + 1:]
+      word_length = len(display)
+    else:
+      max_guesses -= 1
+      guessremains.config(text=f"Guesses remaining: {max_guesses}")
+    guesses.append(guess)
 while max_guesses > 0:
   word_state = ""
   for letter in word:
