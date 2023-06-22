@@ -12,7 +12,7 @@ wordLength = len(word)
 line = "_"* wordLength
 guesses = []
 max_guesses = 5
-
+display = "_" * wordLength
 # adding window title
 wordlabel = tk.Label(window, text="welcome to hangman", font=("times new roman", 14, "bold",))
 wordlabel.pack()
@@ -45,32 +45,26 @@ def handle_Input():
   userInput.delete(0, tk.END)
   if not guess.isalpha() or len(guess) != 1:
     return
-    if guess in word:
-      for i in range(word_length):
+  if guess in word:
+      for i in range(wordLength):
         if word[i] == guess:
           display = display[:i] + guess + display[i + 1:]
       word_length = len(display)
-    else:
+  else:
       max_guesses -= 1
       guessremains.config(text=f"Guesses remaining: {max_guesses}")
-    guesses.append(guess)
-while max_guesses > 0:
-  word_state = ""
-  for letter in word:
-    if letter in guesses:
-      word_state += letter
-    else: word_state += "_"
-  print ("Current word" , word_state)
-  guess = input ("guess a letter")
   guesses.append(guess)
-  if guess in word:
-    print("correct")
-  else:
-    print("incorrect")
-    max_guesses -= 1
-  if set(word) <= set(guesses):
-    print("you win", "the word was", word)
-    break
-  elif max_guesses == 0:
-    print("you lose")
-    break
+  letter_guess.config(text=f"Guessed Letters: {', '.join(guesses)}")
+  word_Line.config(text=display)
+
+# checking if the game is over
+  if max_guesses == 0 or display == word:
+      userInput.config(state=tk.DISABLED)
+      if max_guesses == 0:
+        tk.messagebox.showinfo("Hangman", "You Lose!")
+      else:
+        tk.messagebox.showinfo("Hangman", "You Win")
+userInput.bind("<Return>", lambda event: handle_Input())
+
+# Start the tkinter mainloop
+window.mainloop()
